@@ -36,9 +36,9 @@ public class Main {
 
             while (resultSet.next()) {
                 System.out.printf("id: %d, name: %s, score %d%n",
-                        resultSet.getInt(1),
-                        resultSet.getString(2),
-                        resultSet.getInt(3));
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getInt("score"));
             }
 
         } catch (SQLException exception) {
