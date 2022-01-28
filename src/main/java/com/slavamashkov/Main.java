@@ -3,9 +3,6 @@ package com.slavamashkov;
 import java.sql.*;
 
 public class Main {
-    private static Connection connection;
-    private static Statement statement;
-
     public static void main(String[] args) {
         //createStudent("Max", 55);
         //updateStudentScoreById(3, 65);
@@ -85,20 +82,6 @@ public class Main {
             return DriverManager.getConnection("jdbc:sqlite:main.db");
         } catch (ClassNotFoundException | SQLException e) {
             throw new SQLException("Unable to connect");
-        }
-    }
-
-    public static void disconnect() {
-        try {
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 }
