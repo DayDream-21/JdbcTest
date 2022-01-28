@@ -8,7 +8,8 @@ public class Main {
 
     public static void main(String[] args) {
         //createStudent("Max", 55);
-        updateStudentScoreById(3, 65);
+        //updateStudentScoreById(3, 65);
+        deleteStudentById(1);
         printAllStudents();
     }
 
@@ -60,6 +61,21 @@ public class Main {
              preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             System.out.println("Update error");
+        }
+    }
+
+    private static void deleteStudentById(int studentId) {
+        String sqlStatement = "DELETE FROM students WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setInt(1, studentId);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            System.out.println("Delete error");
         }
     }
 
