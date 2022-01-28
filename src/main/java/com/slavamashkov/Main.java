@@ -6,8 +6,9 @@ public class Main {
     private static Connection connection;
     private static Statement statement;
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         //createStudent("Max", 55);
+        updateStudentScoreById(3, 65);
         printAllStudents();
     }
 
@@ -43,6 +44,22 @@ public class Main {
 
         } catch (SQLException exception) {
             System.out.println("Read error");
+        }
+    }
+
+    private static void updateStudentScoreById(int studentId, int studentScore) {
+        String sqlStatement = "UPDATE students SET score = ? WHERE id = ?";
+
+        try (Connection connection = connect();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
+
+             preparedStatement.setInt(1, studentScore);
+             preparedStatement.setInt(2, studentId);
+
+             preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            System.out.println("Update error");
         }
     }
 
