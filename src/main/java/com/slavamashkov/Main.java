@@ -1,10 +1,19 @@
 package com.slavamashkov;
 
+import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+        buildTable(Student.class);
 
+        List<Student> students = new ArrayList<>(Arrays.asList(
+                new Student("Mary", 50),
+                new Student("Mike", 60),
+                new Student("Jim", 75),
+                new Student("Kate", 70)
+        ));
     }
 
     private static void createStudentsTable() {
@@ -47,6 +56,48 @@ public class Main {
             preparedStatement.setInt(2, studentScore);
 
             preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            System.out.println("Creation error");
+        }
+    }
+
+    // In result, we must achieve and execute sql statement:
+    // CREATE TABLE IF NOT EXISTS students (id INTEGER, name TEXT, score INTEGER);
+    private static void buildTable(Class cl) {
+        // Check if we can build the table from this class
+        if (!cl.isAnnotationPresent(Table.class)) {
+            throw new RuntimeException("@Table annotation missed");
+        }
+
+        Map<Class, String> map = new HashMap<>();
+        map.put(int.class, "INTEGER");
+        map.put(String.class, "TEXT");
+
+        StringBuilder stringBuilder = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
+        // 'CREATE TABLE IF NOT EXISTS'
+        stringBuilder.append(((Table) cl.getAnnotation(Table.class)).title());
+        // 'CREATE TABLE IF NOT EXISTS students'
+        stringBuilder.append(" (");
+        // 'CREATE TABLE IF NOT EXISTS students ('
+        Field[] fields = cl.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Column.class)) {
+                stringBuilder.append(field.getName())
+                        .append(" ")
+                        .append(map.get(field.getType()))
+                        .append(", ");
+            }
+        }
+        // 'CREATE TABLE IF NOT EXISTS students (id INTEGER, name TEXT, score INTEGER, '
+        stringBuilder.setLength(stringBuilder.length() - 2);
+        // 'CREATE TABLE IF NOT EXISTS students (id INTEGER, name TEXT, score INTEGER'
+        stringBuilder.append(");");
+        // 'CREATE TABLE IF NOT EXISTS students (id INTEGER, name TEXT, score INTEGER);'
+        try (Connection connection = connect();
+             PreparedStatement statement =
+                     connection.prepareStatement(stringBuilder.toString())) {
+
+            statement.executeUpdate();
         } catch (SQLException exception) {
             System.out.println("Creation error");
         }
