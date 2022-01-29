@@ -1,14 +1,15 @@
 package com.slavamashkov;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+@AllArgsConstructor
 @Data
+@Table(title = "students")
 public class Student {
+    @Column
     private String name;
-    private int score;
 
-    public Student(String name, int score) {
-        this.name = name;
-        this.score = score;
-    }
+    @Column
+    private int score;
 }
