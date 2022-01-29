@@ -16,6 +16,8 @@ public class Main {
         ));
     }
 
+    // TODO create method that fill generated table with related object
+
     private static void createStudentsTable() {
         String sqlStatement = "CREATE TABLE IF NOT EXISTS students (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
