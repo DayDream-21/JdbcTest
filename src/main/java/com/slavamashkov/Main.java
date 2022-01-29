@@ -4,10 +4,36 @@ import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
-        //createStudent("Max", 55);
-        //updateStudentScoreById(3, 65);
-        deleteStudentById(1);
-        printAllStudents();
+
+    }
+
+    private static void createStudentsTable() {
+        String sqlStatement = "CREATE TABLE IF NOT EXISTS students (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name TEXT," +
+                "score INTEGER);";
+
+        try (Connection connection = connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            System.out.println("Table create error");
+        }
+    }
+
+    private static void deleteStudentsTable() {
+        String sqlStatement = "DROP TABLE IF EXISTS students";
+
+        try (Connection connection = connect();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(sqlStatement)) {
+
+             preparedStatement.executeUpdate();
+
+        } catch (SQLException exception) {
+            System.out.println("Table delete error");
+        }
     }
 
     private static void createStudent(String studentName, int studentScore) {
@@ -30,7 +56,8 @@ public class Main {
         String sqlStatement = "SELECT * FROM students;";
 
         try (Connection connection = connect();
-             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(sqlStatement);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
@@ -52,10 +79,11 @@ public class Main {
              PreparedStatement preparedStatement =
                      connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
 
-             preparedStatement.setInt(1, studentScore);
-             preparedStatement.setInt(2, studentId);
+            preparedStatement.setInt(1, studentScore);
+            preparedStatement.setInt(2, studentId);
 
-             preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
+
         } catch (SQLException exception) {
             System.out.println("Update error");
         }
@@ -71,6 +99,7 @@ public class Main {
             preparedStatement.setInt(1, studentId);
 
             preparedStatement.executeUpdate();
+
         } catch (SQLException exception) {
             System.out.println("Delete error");
         }
